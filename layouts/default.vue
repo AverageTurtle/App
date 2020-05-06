@@ -21,6 +21,9 @@
     <!-- Layout content -->
     <!-- Should use VW margin but this is okay -->
     <nuxt class="mx-auto w-full md:w-2/3 xl:w-1/2" style="padding-top: 1px;" />
+
+    <!-- Consent -->
+    <Consent />
   </div>
 </template>
 
@@ -31,6 +34,7 @@ import { Touch } from 'vuetify/lib/directives/touch'
 // Components
 import NavToggler from '~/components/navigation/NavToggler.vue'
 import SideNav from '~/components/navigation/SideNav.vue'
+import Consent from '~/components/general/Consent.vue'
 // Lazy loaded components
 const Search = () =>
   import(
@@ -39,7 +43,7 @@ const Search = () =>
 
 export default {
   // Components
-  components: { SideNav, NavToggler, Search },
+  components: { SideNav, NavToggler, Search, Consent },
   directives: { Touch },
 
   data() {

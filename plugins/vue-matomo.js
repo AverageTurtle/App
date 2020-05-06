@@ -3,6 +3,7 @@ import VueMatomo from 'vue-matomo'
 
 export default ({ app }) => {
   Vue.use(VueMatomo, {
+    // requireConsent: true,
 
     host: 'https://matomo.akbal.dev',
     siteId: 1,
