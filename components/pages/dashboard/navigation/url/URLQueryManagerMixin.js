@@ -7,61 +7,58 @@ export default {
     ...mapState(['dashBoardData', 'booruData', 'searchData']),
     ...mapGetters(['getActiveBooru', 'getActiveBooruType']),
 
-    stateDomain() {
-      return this.getActiveBooru.domain
-    },
-
-    statePID() {
-      return this.dashBoardData.pid
-    },
-
-    stateTags() {
-      // TODO: find function that does this specifically for URL queries
-      return this.searchData.tags.toString()
+    routerQueries() {
+      return this.$router.query
     },
   },
 
   watch: {
-    stateDomain() {
-      this.setURLQueries()
-    },
+    '$router.query': (newVal, oldVal) => {
+      console.log(newVal, oldVal)
 
-    statePID() {
-      this.setURLQueries()
-    },
-
-    stateTags() {
-      this.setURLQueries()
+      this.QueryHandler(newVal, oldVal)
     },
   },
 
-  async created() {
-    this.checkAndAddToStateURLQueries()
+  created() {
+    // this.checkAndAddToStateURLQueries()
 
     this.setDefaultPageIDIfUndefined()
 
-    // this.setURLQueries()
+    // if (this.dashBoardData.data.length) {
+    //   console.debug('Skip loading anything, we already have data')
+    //   return
+    // }
 
-    if (this.dashBoardData.data.length) {
-      console.debug('Skip loading anything, we already have data')
-      return
-    }
-
-    // console.debug('Loading posts from mixin')
-    await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
+    // this.getPosts()
   },
 
   methods: {
     ...mapMutations([
-      'pidManager',
       'tagManager',
       'booruDataManager',
       'errorManager',
+      'setPID',
     ]),
-    ...mapActions(['fetchWithMode']),
+    ...mapActions(['fetchWithMode', 'pidManager']),
+
+    QueryHandler(newVal, oldVal) {
+      if (newVal.pid === oldVal.pid) console.log('PID has NOT changed')
+      else {
+        console.log('New PID set')
+        this.setPID(newVal.pid)
+      }
+
+      this.getPosts()
+    },
+
+    async getPosts() {
+      // console.debug('Loading posts from mixin')
+      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
+    },
 
     checkAndAddToStateURLQueries() {
-      const { domain, pid, tags } = this.$route.query
+      const { domain, pid, tags } = this.routerQueries
 
       /*
        * Domain
@@ -130,15 +127,15 @@ export default {
       }
     },
 
-    setURLQueries() {
-      this.$router.push({
-        // path: this.$route.path,
-        query: {
-          domain: this.stateDomain,
-          pid: this.statePID,
-          ...(this.stateTags && { tags: this.stateTags }),
-        },
-      })
-    },
+    // setURLQueries() {
+    //   this.$router.push({
+    //     // path: this.$route.path,
+    //     query: {
+    //       domain: this.stateDomain,
+    //       pid: this.statePID,
+    //       ...(this.stateTags && { tags: this.stateTags }),
+    //     },
+    //   })
+    // },
   },
 }

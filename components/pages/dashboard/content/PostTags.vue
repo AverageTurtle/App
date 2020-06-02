@@ -20,13 +20,10 @@
 </template>
 
 <script>
-import { mapMutations, mapActions } from 'vuex'
+import { mapMutations } from 'vuex'
 
 // Components
 import TransitionCollapse from '~/components/utils/TransitionCollapse.vue'
-
-// JS
-import { scrollToTop } from '~/assets/js/scrollUtils.js'
 
 export default {
   name: 'PostTags',
@@ -48,11 +45,10 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['pidManager', 'tagManager']),
-    ...mapActions(['fetchWithMode']),
+    ...mapMutations(['resetPID', 'tagManager']),
 
-    async getSpecificTag(tag) {
-      this.pidManager({ operation: 'reset' })
+    getSpecificTag(tag) {
+      this.resetPID()
 
       this.tagManager({
         operation: 'reset',
@@ -64,11 +60,6 @@ export default {
           name: tag,
         },
       })
-
-      scrollToTop()
-
-      // Search for the tag
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
     },
   },
 }

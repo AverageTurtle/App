@@ -76,11 +76,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import Errors from '~/components/utils/Errors.vue'
-
-// JS
-import { scrollToTop } from '~/assets/js/scrollUtils.js'
 
 export default {
   name: 'SearchResults',
@@ -94,7 +91,6 @@ export default {
 
   methods: {
     ...mapMutations(['searchManager', 'pidManager', 'tagManager']),
-    ...mapActions(['fetchWithMode']),
 
     removeTagFromActive(tagName) {
       this.tagManager({
@@ -125,7 +121,7 @@ export default {
       }
     },
 
-    async dispatchGetAddedTags() {
+    dispatchGetAddedTags() {
       // Set PID to 0 since we're searching for new tags
       this.pidManager({ operation: 'reset' })
 
@@ -133,11 +129,6 @@ export default {
       this.searchManager({
         mode: 'toggleSearch',
       })
-
-      scrollToTop()
-
-      // Search for the tags
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
     },
   },
 }

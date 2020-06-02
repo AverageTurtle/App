@@ -1,9 +1,3 @@
-// Own
-import {
-  findBoorusWithValueByKey,
-  booruTypeList,
-} from '~/assets/lib/rule-34-shared-resources/util/BooruUtils.js'
-
 export default {
   /**
    * Handler for post's data changes
@@ -28,41 +22,8 @@ export default {
     }
   },
 
-  /**
-   * Modifies Page ID
-   * @param {*} state Default
-   * @param {Object} parameters .operation (specific, add, subtract, reset) and .value
-   */
-  pidManager(state, parameters) {
-    switch (parameters.operation) {
-      case 'specific':
-        state.dashBoardData.pid = parameters.value
-        break
-
-      case 'add':
-        state.dashBoardData.pid++
-        break
-
-      case 'subtract':
-        state.dashBoardData.pid--
-        break
-
-      case 'reset':
-        // Find domain in list and use its PID
-        // eslint-disable-next-line no-case-declarations
-        const booruType = findBoorusWithValueByKey(
-          state.booruData.active.type,
-          'type',
-          booruTypeList
-        )[0]
-
-        state.dashBoardData.pid = booruType.initialPageID
-
-        break
-
-      default:
-        throw new Error('No mode specified')
-    }
+  setPID(state, value) {
+    state.dashBoardData.pid = value
   },
 
   /**
@@ -70,16 +31,16 @@ export default {
    * @param {*} state Default store
    * @param {String} domain New domain
    */
-  booruDataManager(state, domain) {
-    // Search for the domain
-    const booruData = findBoorusWithValueByKey(
-      domain,
-      'domain',
-      state.booruData.boorus
-    )[0]
+  // booruDataManager(state, domain) {
+  //   // Search for the domain
+  //   const booruData = findBoorusWithValueByKey(
+  //     domain,
+  //     'domain',
+  //     state.booruData.boorus
+  //   )[0]
 
-    state.booruData.active = booruData
-  },
+  //   state.booruData.active = booruData
+  // },
 
   /**
    * Handler for Side Nav

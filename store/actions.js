@@ -1,6 +1,10 @@
-import loadingAnimationHandler from '~/assets/js/loadingAnimationHandler'
-
+// Own
+import {
+  findBoorusWithValueByKey,
+  booruTypeList,
+} from '~/assets/lib/rule-34-shared-resources/util/BooruUtils.js'
 import { createAPIURL } from '~/assets/js/createAPIURLFromBooruData.js'
+import loadingAnimationHandler from '~/assets/js/loadingAnimationHandler'
 
 export default {
   /**
@@ -157,5 +161,56 @@ export default {
       })
 
     return data
+  },
+
+  routerQueryManager({ state }, query) {
+    this.app.router.push({
+      query,
+    })
+  },
+
+  /**
+   * Modifies Page ID
+   * @param {*} state Default
+   * @param {Object} parameters .operation (specific, add, subtract, reset) and .value
+   */
+  pidManager({ dispatch, state }, parameters) {
+    switch (parameters.operation) {
+      case 'specific':
+        dispatch('routerQueryManager', {
+          pid: parameters.value,
+        })
+        break
+
+      case 'add':
+        dispatch('routerQueryManager', {
+          pid: this.app.router.currentRoute.query.pid + 1,
+        })
+        break
+
+      case 'subtract':
+        dispatch('routerQueryManager', {
+          pid: this.app.router.currentRoute.query.pid - 1,
+        })
+        break
+
+      case 'reset':
+        // Find domain in list and use its PID
+        // eslint-disable-next-line no-case-declarations
+        const booruType = findBoorusWithValueByKey(
+          state.booruData.active.type,
+          'type',
+          booruTypeList
+        )[0]
+
+        dispatch('routerQueryManager', {
+          pid: booruType.initialPageID,
+        })
+        // commit('setPID', booruType.initialPageID)
+        break
+
+      default:
+        throw new Error('No mode specified')
+    }
   },
 }

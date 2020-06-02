@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 // Third party
 import { Intersect } from 'vuetify/lib/directives/intersect'
@@ -65,9 +65,6 @@ import throttle from 'lodash/throttle'
 
 // Icons
 import { ArrowLeftIcon, ArrowRightIcon } from 'vue-feather-icons'
-
-// JS
-import { scrollToTop } from '~/assets/js/scrollUtils.js'
 
 export default {
   name: 'Controls',
@@ -100,30 +97,21 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['pidManager']),
-    ...mapActions(['fetchWithMode']),
+    ...mapActions(['pidManager']),
 
     // Get next page from API
-    async getNextPage() {
+    getNextPage() {
       this.pidManager({ operation: 'add' })
-
-      if (!this.userSettings.infiniteLoad.value) scrollToTop()
-
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
     },
 
     // Get last page from API
-    async getPrevPage() {
+    getPrevPage() {
       this.pidManager({ operation: 'subtract' })
-
-      if (!this.userSettings.infiniteLoad.value) scrollToTop()
-
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
     },
 
-    async getSpecificPage() {
+    getSpecificPage() {
       const specificPage = Number.parseInt(
-        prompt('What page do you want to go to?', '69')
+        prompt('What page do you want to go to?', 69)
       )
 
       // console.log(specificPage)
@@ -135,17 +123,11 @@ export default {
       }
 
       this.pidManager({ operation: 'specific', value: specificPage })
-
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
-
-      if (!this.userSettings.infiniteLoad.value) scrollToTop()
     },
 
-    InfiniteLoadHandler: throttle(async function () {
+    InfiniteLoadHandler: throttle(function () {
       console.debug('Loading more posts')
       this.pidManager({ operation: 'add' })
-
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'concat' })
     }, 5000),
 
     keyboardPageHandler() {

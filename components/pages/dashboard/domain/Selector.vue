@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 // Third party
 import { ChevronDownIcon, CloudIcon } from 'vue-feather-icons'
@@ -58,8 +58,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['booruDataManager', 'pidManager', 'tagManager']),
-    ...mapActions(['fetchWithMode']),
+    ...mapMutations(['booruDataManager', 'resetPID', 'tagManager']),
 
     evaluateBooruList(nsfwSetting, isPatron) {
       // If NSFW is enabled return NSFW only boorus and vice-versa
@@ -76,18 +75,15 @@ export default {
     },
 
     // Changes that we have to do when changing domain so request is not malformed
-    async changeDomain(domain) {
+    changeDomain(domain) {
       // Set domain
       this.booruDataManager(domain)
 
       // Reset Page ID
-      this.pidManager({ operation: 'reset' })
+      this.resetPID()
 
       // Reset tags so we dont search those tags on new domain
       this.tagManager({ operation: 'reset' })
-
-      // And finally load the posts with everything to default
-      await this.fetchWithMode({ mode: 'posts', returnMode: 'add' })
 
       // Send analytics
       fireAnalytics('domain', this.$store.state)
